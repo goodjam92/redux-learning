@@ -1,15 +1,16 @@
-import { connect, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { actionCreators } from "../store";
+import { deleteToDo } from "../store";
 
-function Detail({ toDo }) {
+function Detail() {
   const { id } = useParams();
+  const toDo = useSelector((state) => state);
   const currentToDo = toDo.find((toDo) => toDo.id === parseInt(id));
   const navigator = useNavigate();
   const dispatch = useDispatch();
 
   const deleteButtonClick = () => {
-    dispatch(actionCreators.deleteToDo(id));
+    dispatch(deleteToDo(id));
     navigator("/", { replace: true });
   };
 
@@ -22,8 +23,4 @@ function Detail({ toDo }) {
   );
 }
 
-function mapStateToProps(state) {
-  return { toDo: state };
-}
-
-export default connect(mapStateToProps)(Detail);
+export default Detail;

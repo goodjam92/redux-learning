@@ -1,16 +1,16 @@
-import { createStore } from "redux";
+import { legacy_createStore as createStore } from "redux";
 
 const ADD = "ADD";
 const DELETE = "DELETE";
 
-const addToDo = (text) => {
+export const addToDo = (text) => {
   return {
     type: ADD,
     text,
   };
 };
 
-const deleteToDo = (id) => {
+export const deleteToDo = (id) => {
   return {
     type: DELETE,
     id: parseInt(id),
@@ -29,10 +29,5 @@ const toDoReducer = (state = [], action) => {
 };
 
 const store = createStore(toDoReducer);
-
-export const actionCreators = {
-  addToDo,
-  deleteToDo,
-};
 
 export default store;
