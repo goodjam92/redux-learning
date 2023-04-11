@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addToDo } from "../store";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import ToDo from "../components/ToDo";
+import { add } from "../store";
 
 function Home() {
   const [text, setText] = useState("");
-  const toDos = useSelector((state) => state);
+  const toDos = useSelector((state) => state, shallowEqual);
   const dispatch = useDispatch();
 
   function onChange(e) {
@@ -14,7 +14,7 @@ function Home() {
 
   function onSubmit(e) {
     e.preventDefault();
-    dispatch(addToDo(text));
+    dispatch(add(text));
     setText("");
   }
 

@@ -1,16 +1,5 @@
-export const ADD = "ADD";
-export const DELETE = "DELETE";
-
-export const addToDo = (text) => {
-  return {
-    type: ADD,
-    text,
-  };
-};
-
-export const deleteToDo = (id) => {
-  return {
-    type: DELETE,
-    id,
-  };
-};
+//import { createAction } from "@reduxjs/toolkit";
+/* 
+export const addToDo = createAction("ADD");
+export const deleteToDo = createAction("DELETE");
+ */
