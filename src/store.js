@@ -1,22 +1,13 @@
 import { legacy_createStore as createStore } from "redux";
+import { addToDo, deleteToDo } from "./redux/action";
+import { createReducer, configureStore, createSlice } from "@reduxjs/toolkit";
 
-const ADD = "ADD";
-const DELETE = "DELETE";
+// createReducer, createSlice에서는 state를 mutate 할 수 있다.
+// 내부적으로 immer를 사용하여 상태를 업데이트 해줌.
+// mutate 후에 return을 하면 안된다! return을 할 경우엔 새로운 state를 리턴해야 함.
+// action.payload -> redux의 관행같은 것
+
 const storage = window.localStorage;
-
-export const addToDo = (text) => {
-  return {
-    type: ADD,
-    text,
-  };
-};
-
-export const deleteToDo = (id) => {
-  return {
-    type: DELETE,
-    id: parseInt(id),
-  };
-};
 
 const initialState = () => {
   const toDos = storage.getItem("toDos");
@@ -27,21 +18,60 @@ const initialState = () => {
   return JSON.parse(toDos);
 };
 
-const toDoReducer = (state = initialState(), action) => {
+/* const reducer = (state = [], action) => {
   switch (action.type) {
-    case ADD:
-      const newToDo = { text: action.text, id: Date.now() };
+    case addToDo.type:
+      // action.payload -> redux의 관행같은 것
+      // addToDo 함수와 함께 보내어지는 인자의 값을 읽는다.
+      const newToDo = { text: action.payload, id: Date.now() };
       storage.setItem("toDos", JSON.stringify([newToDo, ...state]));
+      state.push()
       return JSON.parse(storage.getItem("toDos"));
-    case DELETE:
-      const deleteToDo = state.filter((toDo) => toDo.id !== action.id);
-      storage.setItem("toDos", JSON.stringify(deleteToDo));
+    case deleteToDo.type:
+      const updateToDoList = state.filter((toDo) => toDo.id !== action.payload);
+      storage.setItem("toDos", JSON.stringify(updateToDoList));
       return JSON.parse(storage.getItem("toDos"));
     default:
       return state;
   }
 };
+ */
 
-const store = createStore(toDoReducer);
+/* const toDoReducer = createReducer(initialState(), {
+  [addToDo]: (state, action) => {
+    const newToDo = { text: action.payload, id: Date.now() };
+    storage.setItem("toDos", JSON.stringify([newToDo, ...state]));
+    return JSON.parse(storage.getItem("toDos"));
+  },
+  [deleteToDo]: (state, action) => {
+    const updateToDoList = state.filter((toDo) => toDo.id !== action.payload);
+    storage.setItem("toDos", JSON.stringify(updateToDoList));
+    return JSON.parse(storage.getItem("toDos"));
+  },
+}); */
 
-export default store;
+/*  const store = configureStore({ reducer: toDos.reducer })
+    export default store;  
+*/
+
+const toDos = createSlice({
+  name: "toDoReducer",
+  initialState: initialState(),
+  reducers: {
+    add: (state, action) => {
+      storage.setItem(
+        "toDos",
+        JSON.stringify([{ text: action.payload, id: Date.now() }, ...state])
+      );
+      return JSON.parse(storage.getItem("toDos"));
+    },
+    remove: (state, action) => {
+      const updateToDoList = state.filter((toDo) => toDo.id !== action.payload);
+      storage.setItem("toDos", JSON.stringify(updateToDoList));
+      return JSON.parse(storage.getItem("toDos"));
+    },
+  },
+});
+
+export const { add, remove } = toDos.actions;
+export default configureStore({ reducer: toDos.reducer });

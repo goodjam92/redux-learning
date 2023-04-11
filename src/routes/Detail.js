@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteToDo } from "../store";
+import { remove } from "../store";
 
 function Detail() {
   const { id } = useParams();
@@ -10,7 +10,7 @@ function Detail() {
   const dispatch = useDispatch();
 
   const deleteButtonClick = () => {
-    dispatch(deleteToDo(id));
+    dispatch(remove(parseInt(id)));
     navigator("/", { replace: true });
   };
 
